@@ -22,7 +22,7 @@ const onChange = (event: Event) => {
     }
 }
 
-onMounted(() => {    
+onMounted(() => {
     console.log(`Value of ${props.type} is ${value.value} or ${props.startValue}`);
 })
 </script>
@@ -31,6 +31,7 @@ onMounted(() => {
     div
         label {{ label }}
         select(v-model="value" @change="onChange")
+            option(:key="'None'", :value="undefined")
             option(v-for="option in options" :key="option.value" :value="option.value") {{ option.text }}
 </template>
 

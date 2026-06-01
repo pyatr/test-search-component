@@ -19,14 +19,14 @@ export const colorOptions: FilterDropdownOption[] = [
 ];
 
 export type Item = {
-    option1: string;
-    option2: string;
-    option3: string;
+    material: string;
+    shape: string;
+    color: string;
 }
 
 const options: Item[] = [];
 
-export async function getItems(): Promise<Item[]> {
+export async function getItems(material: string | undefined, shape: string | undefined, color: string | undefined): Promise<Item[]> {
     if (!options.length) {
         const optionVariants1 = materialOptions.map(option => option.value);
         const optionVariants2 = shapeOptions.map(option => option.value);
@@ -34,12 +34,17 @@ export async function getItems(): Promise<Item[]> {
 
         for (let i = 1; i <= 100; i++) {
             options.push({
-                option1: optionVariants1[Math.floor(Math.random() * optionVariants1.length)] as string,
-                option2: optionVariants2[Math.floor(Math.random() * optionVariants2.length)] as string,
-                option3: optionVariants3[Math.floor(Math.random() * optionVariants3.length)] as string,
+                material: optionVariants1[Math.floor(Math.random() * optionVariants1.length)] as string,
+                shape: optionVariants2[Math.floor(Math.random() * optionVariants2.length)] as string,
+                color: optionVariants3[Math.floor(Math.random() * optionVariants3.length)] as string,
             });
         }
     }
 
-    return Promise.resolve(options);
+    return Promise.resolve(options.filter((option) =>
+        material != undefined && option.material === material ||
+        shape != undefined && option.shape === shape ||
+        color != undefined && option.color === color ||
+        color === undefined && material === undefined && shape === undefined
+    ));
 }
