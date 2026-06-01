@@ -1,23 +1,29 @@
 <script setup lang="ts">
-import Dropdown from './Filters/Dropdown.vue'
+import Dropdown, { type FilterDropdownOption } from './Filters/Dropdown.vue'
 import SearchBar from './Filters/SearchBar.vue'
 import Pagination from './Filters/Pagination.vue'
+import { getItems, type Item } from '@/mock-api.ts';
+import { onMounted, ref } from 'vue';
+import { colorOptions, materialOptions, shapeOptions } from "../mock-api.ts";
 
-const options1 = [
-    { text: 'Option 11', value: 'option11' },
-    { text: 'Option 12', value: 'option12' },
-    { text: 'Option 13', value: 'option13' }
-];
-const options2 = [
-    { text: 'Option 21', value: 'option21' },
-    { text: 'Option 22', value: 'option22' },
-    { text: 'Option 23', value: 'option23' }
-];
-const options3 = [
-    { text: 'Option 31', value: 'option31' },
-    { text: 'Option 32', value: 'option32' },
-    { text: 'Option 33', value: 'option33' }
-];
+const filteredItems = ref<Item[]>();
+const chosenMaterial = ref<string | undefined>();
+const chosenShape = ref<string | undefined>();
+const chosenColor = ref<string | undefined>();
+
+const loadDropdownFromSearchParams = (paramName: string, options: FilterDropdownOption[]): string | undefined => {
+    let urlParams = new URLSearchParams(window.location.search);
+
+    if (urlParams.has(paramName) && options.map((option) => option.value).includes(urlParams.get(paramName) as string)) {
+        return urlParams.get(paramName) as string;
+    }
+
+    return undefined;
+}
+
+chosenMaterial.value = loadDropdownFromSearchParams('material', materialOptions);
+chosenShape.value = loadDropdownFromSearchParams('shape', shapeOptions);
+chosenColor.value = loadDropdownFromSearchParams('color', colorOptions);
 
 const onSearch = (searchText: string) => {
     console.log(`Searching for ${searchText}`)
@@ -31,17 +37,22 @@ const onPageChange = (page: number) => {
     console.log(`Page changed to ${page}`)
 }
 
+onMounted(async () => {
+    filteredItems.value = await getItems();
+    console.log(filteredItems.value);
+})
+
 </script>
 
 <template lang="pug">
     div.container
         SearchBar(:label="'Поиск'", :placeholder="'Введите текст для поиска'", :onSearch="onSearch")
-    
+
         div.filters
-          Dropdown(:label="'Filter 1'", :options="options1", :onChange="onFilterChange")
-          Dropdown(:label="'Filter 2'", :options="options2", :onChange="onFilterChange")
-          Dropdown(:label="'Filter 3'", :options="options3", :onChange="onFilterChange")
-        
+            Dropdown(:label="'Материал'", :type="'material'", :startValue="chosenMaterial", :options="materialOptions", :onChange="onFilterChange")
+            Dropdown(:label="'Форма'", :type="'shape'", :startValue="chosenShape", :options="shapeOptions", :onChange="onFilterChange")
+            Dropdown(:label="'Цвет'", :type="'color'", :startValue="chosenColor", :options="colorOptions", :onChange="onFilterChange")
+
         Pagination(:pageSize="10", :pageCount="5", :onPageChange="onPageChange")
 </template>
 
