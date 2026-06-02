@@ -19,7 +19,7 @@ const updatePage = ((page: number) => {
 })
 
 const updatePageCount = () => {
-    pageCount.value = Math.floor(props.itemCount / props.pageSize);
+    pageCount.value = Math.ceil(props.itemCount / props.pageSize);
 }
 
 watch(() => props.itemCount, () => {
