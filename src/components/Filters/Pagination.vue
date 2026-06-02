@@ -30,7 +30,7 @@ onMounted(updatePageCount)
 </script>
 
 <template lang="pug">
-    label Страница {{ currentPage }}
+    label Страница {{ currentPage }}, найдено {{ itemCount }} предметов
     div.button-row
         button(@click="() => updatePage(currentPage - 1)") <<<
         button(v-for="page in pageCount" :key="page" @click="() => updatePage(page)") {{ page }}
