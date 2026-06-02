@@ -1,25 +1,36 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 
 const props = defineProps<{
-    pageCount: number | 1;
-    pageSize: number | 10;
+    itemCount: number;
+    pageSize: number;
     onPageChange?: (page: number) => void;
 }>()
 
 const currentPage = ref<number>(1);
+const pageCount = ref<number>(1);
 
 const updatePage = ((page: number) => {
-    currentPage.value = Math.min(Math.max(page + 1, 1), props.pageCount - 1);
+    currentPage.value = Math.min(Math.max(page, 1), pageCount.value);
 
     if (props.onPageChange) {
-        props.onPageChange(page);
+        props.onPageChange(currentPage.value);
     }
 })
 
+const updatePageCount = () => {
+    pageCount.value = Math.floor(props.itemCount / props.pageSize);
+}
+
+watch(() => props.itemCount, () => {
+    updatePageCount();
+    currentPage.value = 1;
+});
+onMounted(updatePageCount)
 </script>
 
 <template lang="pug">
+    label Страница {{ currentPage }}
     div.button-row
         button(@click="() => updatePage(currentPage - 1)") <<<
         button(v-for="page in pageCount" :key="page" @click="() => updatePage(page)") {{ page }}

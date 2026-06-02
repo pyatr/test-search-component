@@ -26,7 +26,11 @@ export type Item = {
 
 const options: Item[] = [];
 
-export async function getItems(material: string | undefined, shape: string | undefined, color: string | undefined): Promise<Item[]> {
+export async function getItems(
+    material: string | undefined,
+    shape: string | undefined,
+    color: string | undefined,
+): Promise<Item[]> {
     if (!options.length) {
         const optionVariants1 = materialOptions.map(option => option.value);
         const optionVariants2 = shapeOptions.map(option => option.value);
@@ -41,10 +45,14 @@ export async function getItems(material: string | undefined, shape: string | und
         }
     }
 
-    return Promise.resolve(options.filter((option) =>
-        material != undefined && option.material === material ||
-        shape != undefined && option.shape === shape ||
-        color != undefined && option.color === color ||
-        color === undefined && material === undefined && shape === undefined
-    ));
+    return Promise.resolve(
+        options
+            .filter(
+                (option) =>
+                    material != undefined && option.material === material ||
+                    shape != undefined && option.shape === shape ||
+                    color != undefined && option.color === color ||
+                    color === undefined && material === undefined && shape === undefined
+            )
+    );
 }

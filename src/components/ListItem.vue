@@ -19,6 +19,8 @@ ul {
     list-style: none;
     display: flex;
     gap: 4px;
+    border: 1px solid grey;
+    height: 24px;
 }
 
 li {
